@@ -1,3 +1,3 @@
-# my_code
+# school21
 
-My portfolio code
+My portfolio code from School21

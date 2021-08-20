@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-c -Wall -Werror -Wextra
+CFLAGS=-c -g -Wall -Werror -Wextra
 DIR_BIN=build
 DIR_OBJ=obj
 DIR_SRC=src

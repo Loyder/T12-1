@@ -20,14 +20,20 @@ void create_h_arr() {
   // [от 2 до 19]
   unsigned int h_arr[8];
   h_arr[0] = 2;
-  int tmp;
+  int tmp, flag_simple;
   for (int i = 1; i < 8; i++) {
     tmp = h_arr[i - 1] + 1;
-    for (int k = 0; k < i; k++) {
-      if (tmp % h_arr[k] != 0) {
-        h_arr[i] = tmp;
+    do {
+      flag_simple = 1;
+      for (int k = 0; k < i; k++) {
+        if (tmp % h_arr[k] == 0) {
+          tmp += 1;
+          flag_simple = 0;
+          break;
+        }
       }
-    }
+    } while (flag_simple == 0);
+    h_arr[i] = tmp;
   }
   for (int i = 0; i < 8; i++) {
     printf("%d %u\n", i, h_arr[i]);

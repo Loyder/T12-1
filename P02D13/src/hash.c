@@ -1,4 +1,4 @@
-#include "hash.h"
+#include "../include/hash.h"
 
 #include <stdio.h>
 void create_hash() {

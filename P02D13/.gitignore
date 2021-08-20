@@ -67,3 +67,6 @@ Thumbs.db
 
 # Executables
 *.out
+
+# VS Code
+.vscode/

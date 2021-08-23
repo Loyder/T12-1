@@ -12,7 +12,7 @@ EXE2=$(BIN)/Quest_2
 
 .PHONY: all clean rebuild
 
-all: door_struct polynomial
+all: door_struct # polynomial
 
 door_struct: $(OBJ1)
 	$(CC) $^ -o $(EXE1)

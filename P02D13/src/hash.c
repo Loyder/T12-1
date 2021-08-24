@@ -1,7 +1,7 @@
 #include "../include/hash.h"
 #define __USE_MINGW_ANSI_STDIO 1
-// #include <inttypes.h>
 #include <math.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 void create_hash() {
@@ -11,15 +11,15 @@ void create_hash() {
   n = 64;
   unsigned int k_arr[n];
   create_k_arr(k_arr, n);
-  unsigned long long **message =
-      (unsigned long long **)malloc(1 * sizeof(unsigned long long *));
+  size_t **message = (size_t **)malloc(1 * sizeof(size_t *));
   create_bin_arr(message);
   free(message);
+  system("pause");
 }
-void create_bin_arr(unsigned long long **message) {
-  unsigned long long i = 0;
+void create_bin_arr(size_t **message) {
+  size_t i = 0;
   do {
-    message[i] = (unsigned long long *)malloc(1 * sizeof(unsigned long long));
+    message[i] = (size_t *)malloc(1 * sizeof(size_t));
     message[i][0] = 0;
 
     FILE *file;
@@ -30,13 +30,13 @@ void create_bin_arr(unsigned long long **message) {
         message[i][0] <<= 1;
         fscanf(file, "%c", &ch);
         message[i][0] += (int)ch;
-        printf("%llu ", message[i][0]);
+        printf("%zu ", message[i][0]);
       }
       fclose(file);
     }
     i++;
   } while (i < 1);  // create dynamic arr[1][512]
-  for (unsigned long long k = 0; k < i; k++) {
+  for (size_t k = 0; k < i; k++) {
     free(message[k]);
   }
   // begin read matrix

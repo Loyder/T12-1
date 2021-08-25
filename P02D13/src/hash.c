@@ -1,7 +1,9 @@
 #include "../include/hash.h"
 #define __USE_MINGW_ANSI_STDIO 1
+// #define _CRTDBG_MAP_ALLOC
+// #include <crtdbg.h>
 #include <math.h>
-#include <stddef.h>
+// #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 void create_hash() {
@@ -14,30 +16,34 @@ void create_hash() {
   size_t **message = (size_t **)malloc(1 * sizeof(size_t *));
   create_bin_arr(message);
   free(message);
-  system("pause");
+  // system("pause");
+  // _CrtDumpMemoryLeaks();
 }
 void create_bin_arr(size_t **message) {
   size_t i = 0;
-  do {
-    message[i] = (size_t *)malloc(1 * sizeof(size_t));
-    message[i][0] = 0;
-
-    FILE *file;
-    char path[100] = "./message.txt";
-    if ((file = fopen(path, "r")) != NULL) {
+  // char path[100] = "message.txt";
+  char path[100] = "src/message.txt";
+  FILE *file = fopen(path, "r");
+  if (file != NULL) {
+    do {
+      message[i] = (size_t *)malloc(1 * sizeof(size_t));
+      message[i][0] = 0;
       while (!feof(file)) {
-        char ch = 0;
-        message[i][0] <<= 1;
-        fscanf(file, "%c", &ch);
-        message[i][0] += (int)ch;
-        printf("%zu ", message[i][0]);
+        char ch;
+        if (fscanf(file, "%c", &ch) != EOF) {
+          message[i][0] <<= 8;
+          message[i][0] += (int)ch;
+          printf("%llx ", message[i][0]);
+        }
       }
-      fclose(file);
+      i++;
+    } while (i < 1);  // create dynamic arr[1][512]
+    fclose(file);
+    for (size_t k = 0; k < i; k++) {
+      free(message[k]);
     }
-    i++;
-  } while (i < 1);  // create dynamic arr[1][512]
-  for (size_t k = 0; k < i; k++) {
-    free(message[k]);
+  } else {
+    printf("n/a");
   }
   // begin read matrix
   // coding each symbol to binary format

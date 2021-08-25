@@ -28,6 +28,9 @@ clean:
 
 rebuild: clean all
 
+go: all
+	./$(EXE)
+
 git:
 	git add .
 	git status

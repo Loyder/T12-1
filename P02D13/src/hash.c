@@ -18,65 +18,56 @@ void create_bin_arr(unsigned **message) {
   char path[60] = "src/message.txt";
   FILE *file = fopen(path, "r");
   if (file != NULL) {
-    unsigned i, j, k, size, tmp1, tmp2 /*tmp3*/;
+    unsigned i, j, k, size, last_pos_mess, num_block, size_64,
+        num_zero_size_byte;
     char ch;
-    // create dynamic arr by 512bit: unsigned arr[][16]
     get_size_of_binary_file(file, &size);
-    tmp1 = size % 64;
-    tmp2 = size / 64 + 1;
-    message = (unsigned **)realloc(message, tmp2 * sizeof(unsigned *));
-    for (i = 0; i < tmp2; i++) {
+    num_zero_size_byte = (64 - log2(size)) / 8;
+    last_pos_mess = size % 64;
+    size_64 = size / 64 + 1;
+    if (last_pos_mess < 56) {
+      num_block = size_64;
+    } else {
+      num_block = size_64 + 1;
+    }
+    message = (unsigned **)realloc(message, num_block * sizeof(unsigned *));
+    for (i = 0; i < num_block; i++) {
       message[i] = (unsigned *)malloc(16 * sizeof(unsigned));
-      // if (tmp2 - i != 1) {
-      //   tmp3 = 64;
-      // } else {
-      //   tmp3 = tmp1;
-      // }
       for (k = 0, j = -1; k < 64; k++) {
         if (k % 4 == 0) {
           j++;
           message[i][j] = 0;
         }
-        if ((tmp2 - i != 1) || k < tmp1) {
+        if ((i < size_64) || k < last_pos_mess) {
           fscanf(file, "%c", &ch);
           message[i][j] <<= 8;
           message[i][j] += (unsigned)ch;
-        } else if (k == tmp1) {
+        } else if ((i == size_64 - 1 && k == last_pos_mess &&
+                    last_pos_mess != 63) ||
+                   (i == size_64 && k == 0 &&
+                    last_pos_mess == 63)) {  // put one 1
           message[i][j] <<= 8;
           message[i][j] += 1 << 7;
-        }
-        // FIX !!! NEED PASTE LENGTH OF FILE (NOT ZERO AFTER 56TH BYTE)
-        else {
+        } else if (k < 56) {  // put zero
           message[i][j] <<= 8;
+        } else if (num_zero_size_byte >
+                   0) {  // put zeros of length of source file
+          message[i][j] <<= 8;
+          num_zero_size_byte--;
+        } else if (size > 0) {  // put length of source file
+          message[i][j] = size / pow(2, ceil(log2(size)));
+          size -= size / pow(2, ceil(log2(size)));
         }
         printf("%x ", message[i][j]);
       }
     }
-    for (i = 0; i < tmp2; i++) {
-      for (j = 0; j < 16; j++) {
-        printf("%08x ", message[i][j]);
-      }
-    }
-
-    if (tmp1 >= 56) {
-      tmp2 += 1;
-      message = (unsigned **)realloc(message, tmp2 * sizeof(unsigned *));
-      message[tmp2 - 1] = (unsigned *)malloc(16 * sizeof(unsigned));
-      for (j = 0; j < 56; j++) {
-        message[tmp2 - 1][j] = 0;
-      }
-    }
-
-    // add length of file
-    // for (j = 0; j < 56; j++) {
-    //   message[tmp2 - 1][j] = 0;
+    // for (i = 0; i < num_block; i++) {
+    //   for (j = 0; j < 16; j++) {
+    //     printf("%08x ", message[i][j]);
+    //   }
     // }
-
-    // if len of matrix (in binary) < 448 then add 1 and puts zero to end of
-    // 447th count len matrix and write this at 64 bit add this 64bit to end
-    // of arr (from 448th to 511th)
     fclose(file);
-    for (i = 0; i < tmp2; i++) {
+    for (i = 0; i < num_block; i++) {
       free(message[i]);
     }
   } else {

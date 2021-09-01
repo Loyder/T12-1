@@ -8,8 +8,6 @@ F2=hash
 LIST=$(F1) $(F2)
 CLIST=$(addsuffix .c, $(LIST))
 OLIST=$(addsuffix .o, $(LIST))
-# OLIST=$(CLIST .c=.o)
-# SRC=$(addprefix $(DIR_SRC)/, $(CLIST))
 OBJ=$(addprefix $(DIR_OBJ)/, $(OLIST))
 EXE=$(DIR_BIN)/$(F1).exe
 

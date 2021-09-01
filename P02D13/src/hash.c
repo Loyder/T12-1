@@ -4,25 +4,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 void create_hash() {
-  int n = 8;
-  unsigned h_arr[n];
+  unsigned n = 8, h_arr[n];
   create_h_arr(h_arr, n);
   n = 64;
   unsigned k_arr[n];
   create_k_arr(k_arr, n);
-  unsigned **message = (unsigned **)malloc(1 * sizeof(unsigned *));
-  create_bin_arr(message);
+  unsigned **message = NULL;
+  message = create_bin_arr(message);
   free(message);
 }
-void create_bin_arr(unsigned **message) {
+unsigned **create_bin_arr(unsigned **message) {
+  message = (unsigned **)malloc(1 * sizeof(unsigned *));
   char path[60] = "src/message.txt";
   FILE *file = fopen(path, "r");
   if (file != NULL) {
-    unsigned i, j, k, size, last_pos_mess, num_block, size_64,
-        num_zero_size_byte;
-    char ch;
+    size_t size, size_64, num_block, i;
+    unsigned char ch, j, k, byte_size = 8, last_pos_mess;
     get_size_of_binary_file(file, &size);
-    num_zero_size_byte = (64 - log2(size)) / 8;
     last_pos_mess = size % 64;
     size_64 = size / 64 + 1;
     if (last_pos_mess < 56) {
@@ -30,42 +28,37 @@ void create_bin_arr(unsigned **message) {
     } else {
       num_block = size_64 + 1;
     }
+    size *= 8;  // length of file in bit
     message = (unsigned **)realloc(message, num_block * sizeof(unsigned *));
     for (i = 0; i < num_block; i++) {
       message[i] = (unsigned *)malloc(16 * sizeof(unsigned));
-      for (k = 0, j = -1; k < 64; k++) {
+      for (k = 0, j = 0; k < 64; k++) {
         if (k % 4 == 0) {
-          j++;
+          if (k != 0) {
+            j++;
+          }
           message[i][j] = 0;
         }
-        if ((i < size_64) || k < last_pos_mess) {
+        if ((i < size_64 - 1) || (i == size_64 - 1 && k < last_pos_mess)) {
           fscanf(file, "%c", &ch);
           message[i][j] <<= 8;
           message[i][j] += (unsigned)ch;
-        } else if ((i == size_64 - 1 && k == last_pos_mess &&
-                    last_pos_mess != 63) ||
-                   (i == size_64 && k == 0 &&
-                    last_pos_mess == 63)) {  // put one 1
+        } else if (i == size_64 - 1 && k == last_pos_mess) {  // put one 1
           message[i][j] <<= 8;
           message[i][j] += 1 << 7;
-        } else if (k < 56) {  // put zero
+        } else if (i != num_block - 1 || k < 56) {  // put zero
           message[i][j] <<= 8;
-        } else if (num_zero_size_byte >
-                   0) {  // put zeros of length of source file
-          message[i][j] <<= 8;
-          num_zero_size_byte--;
-        } else if (size > 0) {  // put length of source file
-          message[i][j] = size / pow(2, ceil(log2(size)));
-          size -= size / pow(2, ceil(log2(size)));
+        } else if (byte_size > 0) {  // put length of source file
+          message[i][j] = size >> (8 * (byte_size - 1));
+          byte_size--;
         }
-        printf("%x ", message[i][j]);
       }
     }
-    // for (i = 0; i < num_block; i++) {
-    //   for (j = 0; j < 16; j++) {
-    //     printf("%08x ", message[i][j]);
-    //   }
-    // }
+    for (i = 0; i < num_block; i++) {
+      for (j = 0; j < 16; j++) {
+        printf("%08x ", message[i][j]);
+      }
+    }
     fclose(file);
     for (i = 0; i < num_block; i++) {
       free(message[i]);
@@ -73,13 +66,13 @@ void create_bin_arr(unsigned **message) {
   } else {
     printf("n/a");
   }
+  return message;
 }
 // size of file <= 4 Gb
-void get_size_of_binary_file(FILE *file, unsigned *size) {
-  fseek(file, 0, SEEK_END);
-  *size = ftell(file);
-  printf("%u\n", *size);
-  fseek(file, 0, SEEK_SET);
+void get_size_of_binary_file(FILE *file, size_t *size) {
+  fseeko64(file, 0, SEEK_END);
+  *size = ftello64(file);
+  fseeko64(file, 0, SEEK_SET);
 }
 void create_h_arr(unsigned *h_arr, int n) {
   // first 32 bit of fractional part square root of first 8 simple numbers

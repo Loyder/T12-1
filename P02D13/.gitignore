@@ -50,6 +50,7 @@ Module.symvers
 Mkfile.oldi
 dkms.conf
 
+# Trashes
 .DS_Store
 .DS_Store?
 ._*
@@ -70,3 +71,7 @@ Thumbs.db
 
 # VS Code
 .vscode/
+
+# Video
+*.mpeg
+*.avi

@@ -9,14 +9,13 @@ void create_hash() {
   n = 64;
   unsigned k[n];
   create_k_arr(k, n);
-  unsigned **w = NULL;
-  w = create_bin_arr(w, h, k);
-  free(w);
+  create_bin_arr(h, k);
 }
-unsigned **create_bin_arr(unsigned **w, unsigned *h, unsigned *k) {
+void create_bin_arr(unsigned *h, unsigned *k) {
   char path[60] = "src/message.txt";
   FILE *file = fopen(path, "r");
   if (file != NULL) {
+    unsigned w[64];
     size_t size, size_64, num_block, i;
     unsigned char ch, j, m, byte_size = 8, last_pos_mess;
     get_size_of_binary_file(file, &size);
@@ -28,38 +27,34 @@ unsigned **create_bin_arr(unsigned **w, unsigned *h, unsigned *k) {
       num_block = size_64 + 1;
     }
     size *= 8;  // length of file in bit
-    w = (unsigned **)malloc(num_block * sizeof(unsigned *));
     for (i = 0; i < num_block; i++) {
-      w[i] = (unsigned *)malloc(64 * sizeof(unsigned));
       for (m = 0, j = 0; m < 64; m++) {
         if (m % 4 == 0) {
           if (m != 0) {
             j++;
           }
-          w[i][j] = 0;
+          w[j] = 0;
         }
         if ((i < size_64 - 1) || (i == size_64 - 1 && m < last_pos_mess)) {
           fscanf(file, "%c", &ch);
-          w[i][j] <<= 8;
-          w[i][j] += (unsigned)ch;
+          w[j] <<= 8;
+          w[j] += (unsigned)ch;
         } else if (i == size_64 - 1 && m == last_pos_mess) {  // put one 1
-          w[i][j] <<= 8;
-          w[i][j] += 1 << 7;
+          w[j] <<= 8;
+          w[j] += 1 << 7;
         } else if (i != num_block - 1 || m < 56) {  // put zero
-          w[i][j] <<= 8;
+          w[j] <<= 8;
         } else if (byte_size > 0) {  // put length of source file
-          w[i][j] = size >> (8 * (byte_size - 1));
+          w[j] = size >> (8 * (byte_size - 1));
           byte_size--;
         }
       }
       // generate adding 48 words to j [from 16 to 63]
       unsigned s0, s1;
       for (j = 16; j < 64; j++) {
-        s0 = rotr(w[i][j - 15], 7) ^ rotr(w[i][j - 15], 18) ^
-             (w[i][j - 15] >> 3);
-        s1 =
-            rotr(w[i][j - 2], 17) ^ rotr(w[i][j - 2], 19) ^ (w[i][j - 2] >> 10);
-        w[i][j] = w[i][j - 16] + s0 + w[i][j - 7] + s1;
+        s0 = rotr(w[j - 15], 7) ^ rotr(w[j - 15], 18) ^ (w[j - 15] >> 3);
+        s1 = rotr(w[j - 2], 17) ^ rotr(w[j - 2], 19) ^ (w[j - 2] >> 10);
+        w[j] = w[j - 16] + s0 + w[j - 7] + s1;
       }
       unsigned A = h[0], B = h[1], C = h[2], D = h[3], E = h[4], F = h[5],
                G = h[6], H = h[7];
@@ -70,7 +65,7 @@ unsigned **create_bin_arr(unsigned **w, unsigned *h, unsigned *k) {
         t2 = s0 + Ma;
         s1 = rotr(E, 6) ^ rotr(E, 11) ^ rotr(E, 25);
         Ch = (E & F) ^ ((~E) & G);
-        t1 = H + s1 + Ch + k[j] + w[i][j];
+        t1 = H + s1 + Ch + k[j] + w[j];
         H = G;
         G = F;
         F = E;
@@ -93,20 +88,8 @@ unsigned **create_bin_arr(unsigned **w, unsigned *h, unsigned *k) {
       printf("%08x", h[i]);
     }
     fclose(file);
-    for (i = 0; i < num_block; i++) {
-      free(w[i]);
-    }
   } else {
     printf("n/a");
-  }
-  return w;
-}
-void my_printf(unsigned num) {
-  for (unsigned char i = 0; i < 32; i++) {
-    printf("%d", (num << i) >> 31);
-    // if (i % 8 == 7) {
-    //   printf(" ");
-    // }
   }
 }
 // rotate_right (0 <= num <= 32)

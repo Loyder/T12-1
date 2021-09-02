@@ -10,10 +10,6 @@ void create_hash() {
   unsigned k[n];
   create_k_arr(k, n);
   unsigned **w = NULL;
-  // for (unsigned i = 0; i < 64; i++) {
-  //   printf("%08x ", k[i]);
-  // }
-  // printf("\n");
   w = create_bin_arr(w, h, k);
   free(w);
 }
@@ -74,7 +70,7 @@ unsigned **create_bin_arr(unsigned **w, unsigned *h, unsigned *k) {
         t2 = s0 + Ma;
         s1 = rotr(E, 6) ^ rotr(E, 11) ^ rotr(E, 25);
         Ch = (E & F) ^ ((~E) & G);
-        t1 = H + s1 + Ch + k[i] + w[i][j];
+        t1 = H + s1 + Ch + k[j] + w[i][j];
         H = G;
         G = F;
         F = E;
@@ -83,54 +79,6 @@ unsigned **create_bin_arr(unsigned **w, unsigned *h, unsigned *k) {
         C = B;
         B = A;
         A = t1 + t2;
-        if (j <= 1) {
-          // printf("s1 = ");
-          // my_printf(s1);
-          // printf("\nCh = ");
-          // my_printf(Ch);
-          // printf("\nt1 = ");
-          // my_printf(t1);
-          // printf("\ns0 = ");
-          // my_printf(s0);
-          // printf("\nMa = ");
-          // my_printf(Ma);
-          // printf("\nt2 = ");
-          // my_printf(t2);
-
-          // printf("\nH = ");
-          // my_printf(H);
-          // printf("\nG = ");
-          // my_printf(G);
-          // printf("\nF = ");
-          // my_printf(F);
-          // printf("\nE = ");
-          // my_printf(E);
-          // printf("\nD = ");
-          // my_printf(D);
-          // printf("\nC = ");
-          // my_printf(C);
-          // printf("\nB = ");
-          // my_printf(B);
-          // printf("\nA = ");
-          // my_printf(A);
-          // printf("\n");
-          printf("k[i] = %08x\n", k[i]);
-          printf("w[i][j] = %08x\n", w[i][j]);
-          printf("s1 = %08x\n", s1);
-          printf("Ch = %08x\n", Ch);
-          printf("t1 = %08x\n", t1);
-          printf("s0 = %08x\n", s0);
-          printf("Ma = %08x\n", Ma);
-          printf("t2 = %08x\n", t2);
-          printf("A = %08x\n", A);
-          printf("B = %08x\n", B);
-          printf("C = %08x\n", C);
-          printf("D = %08x\n", D);
-          printf("E = %08x\n", E);
-          printf("F = %08x\n", F);
-          printf("G = %08x\n", G);
-          printf("H = %08x\n", H);
-        }
       }
       h[0] += A;
       h[1] += B;
@@ -141,17 +89,9 @@ unsigned **create_bin_arr(unsigned **w, unsigned *h, unsigned *k) {
       h[6] += G;
       h[7] += H;
     }
-    // for (i = 0; i < num_block; i++) {
-    //   for (j = 0; j < 64; j++) {
-    //     my_printf(w[i][j]);
-    //     if (i != num_block - 1 || j != 63) {
-    //       printf(" ");
-    //     }
-    //   }
-    // }
-    // for (i = 0; i < 8; i++) {
-    //   printf("%08x ", h[i]);
-    // }
+    for (i = 0; i < 8; i++) {
+      printf("%08x", h[i]);
+    }
     fclose(file);
     for (i = 0; i < num_block; i++) {
       free(w[i]);

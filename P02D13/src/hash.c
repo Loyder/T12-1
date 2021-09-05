@@ -81,9 +81,6 @@ void create_bin_arr(unsigned *h, unsigned *k, char *path, char *hash_summ) {
       h[6] += G;
       h[7] += H;
     }
-    // for (i = 0; i < 8; i++) {
-    //   printf("%08x", h[i]);
-    // }
     fclose(file);
   } else {
     printf("n/a");

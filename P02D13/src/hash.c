@@ -3,16 +3,13 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-void create_hash() {
-  unsigned n = 8, h[n];
-  create_h_arr(h, n);
-  n = 64;
-  unsigned k[n];
-  create_k_arr(k, n);
-  create_bin_arr(h, k);
+void create_hash(char *path, char *hash_summ) {
+  unsigned h[8], k[64];
+  create_h_arr(h, 8);
+  create_k_arr(k, 64);
+  create_bin_arr(h, k, path, hash_summ);
 }
-void create_bin_arr(unsigned *h, unsigned *k) {
-  char path[60] = "src/message.txt";
+void create_bin_arr(unsigned *h, unsigned *k, char *path, char *hash_summ) {
   FILE *file = fopen(path, "r");
   if (file != NULL) {
     unsigned w[64];
@@ -84,13 +81,15 @@ void create_bin_arr(unsigned *h, unsigned *k) {
       h[6] += G;
       h[7] += H;
     }
-    for (i = 0; i < 8; i++) {
-      printf("%08x", h[i]);
-    }
+    // for (i = 0; i < 8; i++) {
+    //   printf("%08x", h[i]);
+    // }
     fclose(file);
   } else {
     printf("n/a");
   }
+  snprintf(hash_summ, 65, "%08x%08x%08x%08x%08x%08x%08x%08x", h[0], h[1], h[2],
+           h[3], h[4], h[5], h[6], h[7]);
 }
 // rotate_right (0 <= num <= 32)
 unsigned rotr(unsigned num, unsigned char shift) {

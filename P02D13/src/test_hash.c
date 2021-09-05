@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "../include/hash.h"
+
 void test(int num, char *message1, char *test_hash_summ1);
 int main() {
   char

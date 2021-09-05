@@ -3,19 +3,19 @@ CFLAGS=-c -g -Wall -Werror -Wextra
 DIR_BIN=build
 DIR_OBJ=obj
 DIR_SRC=src
-F1=test_hash
-F2=hash
-LIST=$(F1) $(F2)
+S1=game_life
+S2=hash
+LIST=$(S1) $(S2)
 CLIST=$(addsuffix .c, $(LIST))
 OLIST=$(addsuffix .o, $(LIST))
 OBJ=$(addprefix $(DIR_OBJ)/, $(OLIST))
-EXE=$(DIR_BIN)/$(F1).exe
+EXE=$(DIR_BIN)/$(S1).exe
 
 .PHONY: all clean rebuild
 
-all: $(F1) 
+all: $(S1) 
 
-$(F1) : $(OBJ)
+$(S1) : $(OBJ)
 	$(CC) -g $^ -o $(EXE)
 
 $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c

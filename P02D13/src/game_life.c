@@ -32,6 +32,7 @@ int main() {
 }
 int setup(char** matrix) {
   int flag_err = 0;
+  // NEED FIX. PATH not correct working (opening from different places)
   char path[_MAX_DIR] = "datasets/2.txt";
   FILE* start = fopen(path, "r");
   if (!start) {

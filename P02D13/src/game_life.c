@@ -9,23 +9,27 @@ int main() {
   for (int i = 0; i < HEIGHT; i++) {
     matrix[i] = (char*)malloc(WIDTH * sizeof(char));
   }
-  int mode;
-  printf("Choose mode of game:\n1 - step-by-step mode\n2 - interactive mode\n");
-  scanf("%d", &mode);
+  int mode = 2;
+  // printf("Choose mode of game:\n1 - step-by-step mode\n2 - interactive
+  // mode\n"); scanf("%d", &mode);
   if (mode == 1) {
     setup(matrix);
     // do {
     //   print(matrix);
     // } while (my_getch() == ' ');
   } else if (mode == 2) {
+    system("cls");
     setup(matrix);
-    start(matrix);
     print(matrix);
-    while (1 == 1) {
+    usleep(60 * 1000);
+    system("cls");
+    while (1) {
       update(matrix);
       print(matrix);
-      sleep(1);
+      usleep(60 * 1000);
+      system("cls");
     }
+    // usleep(5000 * 1000);
   }
   for (int i = 0; i < HEIGHT; i++) {
     free(matrix[i]);
@@ -33,55 +37,57 @@ int main() {
   free(matrix);
   return 0;
 }
-
 void update(char** matrix) {
   char new_matrix[HEIGHT][WIDTH];
-  int i, j, x, y;
-  int neighbour;
-  for (i = 0; i < HEIGHT; i++) {
-    for (j = 0; j < WIDTH; j++) {
-      new_matrix[i][j] = matrix[i][j];
-    }
-  }
+  int i, j, y, x, yy, xx, neighbour;
   for (i = 1; i < HEIGHT - 1; i++) {
     for (j = 1; j < WIDTH - 1; j++) {
       neighbour = 0;
-      for (x = i - 1; x <= i + 1; x++) {
-        for (y = j - 1; y <= j + 1; y++) {
-          if (!(x == i && y == j) && matrix[x][y] == '*') {
+      for (y = i - 1; y <= i + 1; y++) {
+        if (y == 0) {
+          yy = HEIGHT - 2;
+        } else if (y == HEIGHT - 1) {
+          yy = 1;
+        } else {
+          yy = y;
+        }
+        for (x = j - 1; x <= j + 1; x++) {
+          if (x == 0) {
+            xx = WIDTH - 2;
+          } else if (x == WIDTH - 1) {
+            xx = 1;
+          } else {
+            xx = x;
+          }
+          if (!(y == i && x == j) && matrix[yy][xx] == '*') {
             neighbour++;
           }
         }
       }
-      if (neighbour == 3 && matrix[i][j] == ' ') {
-        new_matrix[i][j] = '*';
-      } else if (neighbour != 3 && neighbour != 2 && matrix[i][j] == '*') {
-        new_matrix[i][j] = ' ';
+      if (matrix[i][j] == ' ') {
+        if (neighbour == 3) {
+          new_matrix[i][j] = '*';
+        } else {
+          new_matrix[i][j] = ' ';
+        }
+      } else if (matrix[i][j] == '*') {
+        if (neighbour == 3 || neighbour == 2) {
+          new_matrix[i][j] = '*';
+        } else {
+          new_matrix[i][j] = ' ';
+        }
       }
     }
   }
-
   for (i = 1; i < HEIGHT - 1; i++) {
     for (j = 1; j < WIDTH - 1; j++) {
       matrix[i][j] = new_matrix[i][j];
     }
   }
 }
-void start(char** matrix) {
-  FILE* start = fopen("../datasets/1.txt", "r");
-  for (int i = 1; i < HEIGHT - 1; i++) {
-    for (int j = 1; j < WIDTH - 1; j++) {
-      fscanf(start, "%c", &matrix[i][j]);
-      if (matrix[i][j] == '-') {
-        matrix[i][j] = ' ';
-      } else if (matrix[i][j] == '1') {
-        matrix[i][j] = '*';
-      }
-      // if (foef(start)) break;
-    }
-  }
-}
 void setup(char** matrix) {
+  FILE* start = fopen("datasets/4.txt", "r");
+  char ch;
   for (int i = 0; i < HEIGHT; i++) {
     for (int j = 0; j < WIDTH; j++) {
       if (i == 0 || i == HEIGHT - 1) {
@@ -89,7 +95,14 @@ void setup(char** matrix) {
       } else if (j == 0 || j == WIDTH - 1) {
         matrix[i][j] = '|';
       } else {
-        matrix[i][j] = ' ';
+        do {
+          fscanf(start, "%c", &ch);
+        } while (ch == '\n');
+        if (ch == '-') {
+          matrix[i][j] = ' ';
+        } else if (ch == '1') {
+          matrix[i][j] = '*';
+        }
       }
     }
   }
@@ -99,7 +112,9 @@ void print(char** matrix) {
     for (int j = 0; j < WIDTH; j++) {
       printf("%c", matrix[i][j]);
     }
-    printf("\n");
+    if (i < HEIGHT - 1) {
+      printf("\n");
+    }
   }
 }
 // char my_getch() {

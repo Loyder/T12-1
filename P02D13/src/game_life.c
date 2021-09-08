@@ -12,9 +12,10 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < HEIGHT; i++) {
     matrix[i] = (char*)malloc(WIDTH * sizeof(char));
   }
-  char path[PATH_MAX], path_datasets[PATH_MAX] = "datasets\\2.txt";
+  char buf[PATH_MAX], path[PATH_MAX],
+      path_datasets[PATH_MAX] = "datasets\\2.txt";
   if (argc > 0) {
-    char buf[PATH_MAX], **lppPart = NULL;
+    char** lppPart = NULL;
     GetFullPathName(argv[0], PATH_MAX, buf, lppPart);
     int ptr = strlen(buf);
     for (int i = 0; i < 2; i++) {
@@ -29,13 +30,21 @@ int main(int argc, char* argv[]) {
   system("cls");
   if (!setup(matrix, path)) {
     print(matrix);
+    sleep(3);
     system("cls");
-    while (1) {
-      update(matrix);
-      print(matrix);
-      // usleep(20 * 1000);
-      system("cls");
-    }
+    path[0] = '\0';
+    snprintf(path, PATH_MAX, "%smatrix.txt", buf);
+    // while (1) {
+    update(matrix);
+    print(matrix);
+    write_matrix_to_file(matrix, path);
+    // count hash summ (unique combination) and delete file
+    // write hash summ to matrix
+    // if hash is replying (verify from end of matrix) then print period and
+    // exit
+    // usleep(20 * 1000);
+    // system("cls");
+    // }
   } else {
     printf("n/a");
   }
@@ -45,6 +54,30 @@ int main(int argc, char* argv[]) {
   free(matrix);
   return 0;
 }
+void write_matrix_to_file(char** matrix, char* path) {
+  FILE* file = fopen(path, "w");
+  for (int i = 0; i < HEIGHT; i++) {
+    fwrite(matrix[i], 1, WIDTH, file);
+    // fputs(matrix[i], file);
+  }
+  fclose(file);
+}
+// void test(int num, char* message, char* test_hash_summ) {
+//   char path[60] = "src/test_message.txt";
+//   FILE* file = fopen(path, "w");
+//   fputs(message, file);
+//   fclose(file);
+//   char hash_summ[65];
+//   create_hash(path, hash_summ);
+//   if (!strcmp(test_hash_summ, hash_summ)) {
+//     printf("#%d: Test is OK", num);
+//   } else {
+//     printf("#%d: Test FAILED!!!", num);
+//   }
+//   if (remove(path)) {
+//     printf("\nCan't remove file");
+//   }
+// }
 int setup(char** matrix, char* path) {
   int flag_err = 0;
   FILE* file = fopen(path, "r");

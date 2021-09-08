@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < HEIGHT; i++) {
     matrix[i] = (char*)malloc(WIDTH * sizeof(char));
   }
-  char path[PATH_MAX], path_datasets[PATH_MAX] = "datasets\\1.txt";
+  char path[PATH_MAX], path_datasets[PATH_MAX] = "datasets\\2.txt";
   if (argc > 0) {
     char buf[PATH_MAX], **lppPart = NULL;
     GetFullPathName(argv[0], PATH_MAX, buf, lppPart);
@@ -26,17 +26,16 @@ int main(int argc, char* argv[]) {
     buf[ptr + 1] = '\0';
     snprintf(path, PATH_MAX, "%s%s", buf, path_datasets);
   }
-  // system("cls");
+  system("cls");
   if (!setup(matrix, path)) {
-    //   print(matrix);
-    //   usleep(60 * 1000);
-    //   system("cls");
-    //   while (1) {
-    //     update(matrix);
-    //     print(matrix);
-    //     usleep(10 * 1000);
-    //     system("cls");
-    //   }
+    print(matrix);
+    system("cls");
+    while (1) {
+      update(matrix);
+      print(matrix);
+      // usleep(20 * 1000);
+      system("cls");
+    }
   } else {
     printf("n/a");
   }

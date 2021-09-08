@@ -15,25 +15,16 @@ int main(int argc, char* argv[]) {
   char path[PATH_MAX], path_datasets[PATH_MAX] = "datasets\\1.txt";
   if (argc > 0) {
     char buf[PATH_MAX], **lppPart = NULL;
-    printf("argv[0]:\n%s", argv[0]);
-    int res = GetFullPathName(argv[0], PATH_MAX, buf, lppPart);
-    // snprintf(buf, PATH_MAX, "%s", argv[0]);
-    printf("\nres = %d\nbuf:\n%s", res, buf);
+    GetFullPathName(argv[0], PATH_MAX, buf, lppPart);
     int ptr = strlen(buf);
-    printf("\nptr: %d", ptr);
     for (int i = 0; i < 2; i++) {
       ptr--;
-      printf("\nptr: %d", ptr);
-      printf("\ni: %d", i);
       while (buf[ptr] != '\\') {
-        printf("\nbuf[ptr]:\n%c", buf[ptr]);
         ptr--;
-        printf("\nptr: %d", ptr);
       }
     }
     buf[ptr + 1] = '\0';
     snprintf(path, PATH_MAX, "%s%s", buf, path_datasets);
-    printf("\npath:\n%s", path);
   }
   // system("cls");
   if (!setup(matrix, path)) {
@@ -57,14 +48,7 @@ int main(int argc, char* argv[]) {
 }
 int setup(char** matrix, char* path) {
   int flag_err = 0;
-  // NEED FIX. PATH not correct working (opening from different places)
-
   FILE* file = fopen(path, "r");
-  // if (!file) {
-  //   char path_new[_MAX_DIR + 3];
-  //   snprintf(path_new, _MAX_DIR + 3, "../%s", path);
-  //   file = fopen(path_new, "r");
-  // }
   if (file) {
     char ch;
     for (int i = 0; i < HEIGHT; i++) {

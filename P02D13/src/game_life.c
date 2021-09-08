@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     }
     buf[ptr + 1] = '\0';
     snprintf(path, PATH_MAX, "%s%s", buf, path_datasets);
-    printf("\npath_datasets:\n%s", path);
+    printf("\npath:\n%s", path);
   }
   // system("cls");
   if (!setup(matrix, path)) {

@@ -2,25 +2,50 @@
 #include "../include/game_life.h"
 
 #include <dir.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-int main() {
+#include <windows.h>
+int main(int argc, char* argv[]) {
   char** matrix = (char**)malloc(HEIGHT * sizeof(char*));
   for (int i = 0; i < HEIGHT; i++) {
     matrix[i] = (char*)malloc(WIDTH * sizeof(char));
   }
-  system("cls");
-  if (!setup(matrix)) {
-    print(matrix);
-    usleep(60 * 1000);
-    system("cls");
-    while (1) {
-      update(matrix);
-      print(matrix);
-      usleep(10 * 1000);
-      system("cls");
+  char path[PATH_MAX], path_datasets[PATH_MAX] = "datasets\\1.txt";
+  if (argc > 0) {
+    char buf[PATH_MAX], **lppPart = NULL;
+    printf("argv[0]:\n%s", argv[0]);
+    int res = GetFullPathName(argv[0], PATH_MAX, buf, lppPart);
+    // snprintf(buf, PATH_MAX, "%s", argv[0]);
+    printf("\nres = %d\nbuf:\n%s", res, buf);
+    int ptr = strlen(buf);
+    printf("\nptr: %d", ptr);
+    for (int i = 0; i < 2; i++) {
+      ptr--;
+      printf("\nptr: %d", ptr);
+      printf("\ni: %d", i);
+      while (buf[ptr] != '\\') {
+        printf("\nbuf[ptr]:\n%c", buf[ptr]);
+        ptr--;
+        printf("\nptr: %d", ptr);
+      }
     }
+    buf[ptr + 1] = '\0';
+    snprintf(path, PATH_MAX, "%s%s", buf, path_datasets);
+    printf("\npath_datasets:\n%s", path);
+  }
+  // system("cls");
+  if (!setup(matrix, path)) {
+    //   print(matrix);
+    //   usleep(60 * 1000);
+    //   system("cls");
+    //   while (1) {
+    //     update(matrix);
+    //     print(matrix);
+    //     usleep(10 * 1000);
+    //     system("cls");
+    //   }
   } else {
     printf("n/a");
   }
@@ -30,17 +55,17 @@ int main() {
   free(matrix);
   return 0;
 }
-int setup(char** matrix) {
+int setup(char** matrix, char* path) {
   int flag_err = 0;
   // NEED FIX. PATH not correct working (opening from different places)
-  char path[_MAX_DIR] = "datasets/2.txt";
-  FILE* start = fopen(path, "r");
-  if (!start) {
-    char path_new[_MAX_DIR + 3];
-    snprintf(path_new, _MAX_DIR + 3, "../%s", path);
-    start = fopen(path_new, "r");
-  }
-  if (start) {
+
+  FILE* file = fopen(path, "r");
+  // if (!file) {
+  //   char path_new[_MAX_DIR + 3];
+  //   snprintf(path_new, _MAX_DIR + 3, "../%s", path);
+  //   file = fopen(path_new, "r");
+  // }
+  if (file) {
     char ch;
     for (int i = 0; i < HEIGHT; i++) {
       for (int j = 0; j < WIDTH; j++) {
@@ -50,7 +75,7 @@ int setup(char** matrix) {
           matrix[i][j] = '|';
         } else {
           do {
-            fscanf(start, "%c", &ch);
+            fscanf(file, "%c", &ch);
           } while (ch == '\n');
           if (ch == '-') {
             matrix[i][j] = ' ';
@@ -60,6 +85,7 @@ int setup(char** matrix) {
         }
       }
     }
+    fclose(file);
   } else {
     flag_err = 1;
   }

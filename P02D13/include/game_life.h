@@ -8,4 +8,6 @@ void print(char** matrix);
 void update(char** matrix);
 char my_getch();
 void write_matrix_to_file(char** matrix, char* path);
+void write_hash(char* path, char** matrix, char** hash_summ, int i);
+int check_exit(char** hash_sum, int size_hash_sum, int* period);
 #endif  // !GAME_LIFE_H

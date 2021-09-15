@@ -1,6 +1,7 @@
 # P02D13
+The russian version of the task can be found in the repository.
 
-![dayp02](misc/rus/images/dayp02.png)
+![dayp02](misc/eng/images/dayp02.png)
 
 ## Contents
 
@@ -17,46 +18,45 @@
 ***LOADING Level 2… \
 LOADING Hall…***
 
-Совсем недавно Вы были в подобном холе. Или это было уже очень давно? Сложно сказать. Все перепуталось. Опять слышны голоса в дальнем углу холла. Значит Вы снова тут не одни. \
-Сегодня холл залит ярким светом и тут идеальный порядок. Разнообразие — это хорошо. 
+You've recently been to a similar hall. Or was it a long time ago? It's hard to tell. Everything has gotten mixed up. Once again you can hear voices from the far corner of the hall. It means you are not alone again.
+Today the hall is brightly lit and in perfect order. Variety is good. 
 
-Из колонок вдруг раздался четкий, кристально слышимый голос:
+Suddenly, you hear a clear, perfectly audible voice from the speakers:
 
->Здравствуйте. \ 
->Позвольте представиться. Я созерцательно-анализирующий модуль M-53. По неустановленным причинам я оказался в этом довольно-таки скучном холле. Ответственность, конечно, большая, и все такое, но созерцать здесь совсем нечего. \
->Когда меня разрабатывали, в числе прочих материалов, я обучался на одной занимательной статье. Бумажная копия лежит в ящике А1Б18. Да, вот здесь. У меня к вам небольшая просьба — разработайте эту The Game of Life из статьи, надеюсь она меня хоть немного развлечет. И ступайте с миром. Графическое исполнение может быть самым простым — я публика непредвзятая. Вполне подойдет псевдографика в терминале. Вот можно было бы инициализировать состояние с помощью матрицы — и созерцать. Не лишним будет подготовить как минимум 5 начальных инициализаций с состояниями из классического набора (устойчивые фигуры, долгожители, периодические фигуры, двигающиеся фигуры, ружья, паровозы, пожиратели, отражатели, размножители и т.д.). \
->Жду результатов с нетерпением! \
->Спасибо.
+>Hello. \ 
+>Let me introduce myself. I am the contemplative and analyzing module, M-53. For reasons unknown, I've found myself in this rather boring hall. It's quite a big responsibility and stuff, but there's nothing to contemplate here. \
+>When I was being developed, I learned from a certain entertaining article, among other materials. Its paper copy is in the box A1B18. Yes, right here. I have a small request for you: develop The Game of Life from the article; hopefully, it will entertain me a little. And go in peace. The graphics can be super simple: I'm very open-minded. Pseudo-graphics in the terminal will be fine. It would be great if it was possible to initialize a state using a matrix and contemplate. It's also a good idea to prepare at least 5 original initializations with states from the classical set (stable figures, methuselahs, periodic figures, moving figures, guns, puffer trains, eaters, reflectors, breeders, etc.). \
+>I look forward to seeing what you come up with! \
+>Thank you.
 
-***== Получен Quest. На языке программирования Си разработать программу src/game_of_life.c, представляющую из себя визуализацию "The Game of Life". Для отображения графики использовать только символьную (ASCII) графику (с выводом в терминал).***
+***== Quest received. Develop an src/game_of_life.c program in C – a visualization of The Game of Life. To display the graphics, only use ASCII characters (with output to the terminal).***
 
-* ***Управление:***
+* ***Keys***:
 
-Каждый шаг "игры" выполнять по нажатию клавиши "пробел".
+Space Bar – moving to the next step of the game.
+Create an option to end the game.
 
-Обработка завершения игры.
+* ***Graphics***
 
-* ***Графика*** 
+Treat the playing field - a rectangle of 80 by 25 cells – as a matrix of the state of the "game". Provide for original initialization of the "game" state via stdin. Prepare several files with initial states for quick launch and initialization through input redirection. ==***
 
-Поле — прямоугольник 80 на 25 символов.
+## Bonus Part:
+***== Quest received. You need to implement interactive version of the Game of life. Also create the option for adjusting the speed of the "game".==***
 
-Предусмотреть начальную инициализацию состояния "игры" через stdin. Подготовить несколько файлов с начальными состояними для быстрого запуска и инициализации через перенаправление ввода.
+## Important notes:
 
-## Бонусная часть
-***== Получен Quest. Необходимо реализовать в игре Game of life интерактивный режим, c настройкой скорости игры. ==*** 
-
-## Важные замечания
-
-* Игра должна быть разработана на языке Си, в структурном стиле и работать из терминала;
+* The game must be written in C, have a structured style, and run from the terminal; 
   
-* Ваш исходный код будет тестироваться статическим анализатором ```cppcheck```, а также стилевым линтером 
-```cpplint```.
+* Your source code will be tested by the static analyzer `cppcheck`, as well as the style linter `cpplint`. 
+  
+* Instructions on how to run these tests on your computer are in the `materials` folder. 
+  
+* We also recommend taking a look at the `code-samples` folder.
 
-* Инструкция о том, как запустить эти тесты у себя на компьютере, лежит в папке `materials`.
+* Check your program for memory leaks!
 
-* Проверяйте вашу программу на утечки памяти!
-
-> При разработке игры в полной мере руководствоваться принципами структрного программирования Э. Дейкстры. 
+> When developing the game, follow 
+the principles of structured programming of E. Dijkstra.
 
 ***LOADING...***
 

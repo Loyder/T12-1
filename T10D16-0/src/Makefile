@@ -14,7 +14,8 @@ EXE6=$(BIN)/Quest_6
 EXE7=$(BIN)/Quest_7
 .PHONY: all clean rebuild
 
-all: strlen_tests strcmp_tests strcpy_tests strcat_tests strchr_tests strstr_tests strtok_tests
+all: strlen_tests
+#strcmp_tests strcpy_tests strcat_tests strchr_tests strstr_tests strtok_tests
 
 strlen_tests: $(EXE1)
 $(EXE1): $(OBJECT1)_q1.o $(OBJECT2)_q1.o
